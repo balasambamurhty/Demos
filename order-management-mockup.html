@@ -1556,6 +1556,229 @@
             await waitIfPaused();
 
             await addMessage('agent', 'You\'re welcome! The order has been submitted to the fulfillment system. Would you like me to help with anything else?', 'AI WORKER');
+
+            // ========== RETURN ORDER FLOW ==========
+            await new Promise(resolve => setTimeout(resolve, 2800));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('user', 'Actually yes! We received a shipment last week from order #530680 and 3 of the smartphones are defective - they won\'t power on at all. I need to return them and get replacements.', 'USER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            await addMessage('thinking', 'Processing return request: Locate order #530680, verify delivery status, check return policy eligibility, identify defective items, determine replacement options, and process RMA with advance replacement if qualified.', 'AI WORKER PLANNING');
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            const returnPlanMsg = await addMessage('agent', '<span class="step-indicator">Step 1/5</span> Planning the return and replacement process:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(returnPlanMsg, '→', 'Locate and verify order #530680');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(returnPlanMsg, '→', 'Check return policy and eligibility window');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(returnPlanMsg, '→', 'Verify defective product warranty terms');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(returnPlanMsg, '→', 'Create RMA and process return');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(returnPlanMsg, '→', 'Arrange advance replacement shipment');
+
+            await new Promise(resolve => setTimeout(resolve, 2200));
+            await waitIfPaused();
+
+            // Step 2: Locate order
+            messageDelay = 400;
+            await addMessage('agent', '<span class="step-indicator">Step 2/5</span> Searching for order #530680...', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await waitIfPaused();
+            showScreen('screen2');
+
+            await new Promise(resolve => setTimeout(resolve, 800));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('system', 'Order #530680 located - AB International');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await waitIfPaused();
+
+            const orderInfoMsg = await addMessage('agent', 'Order details retrieved:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(orderInfoMsg, '✓', 'Order #530680 - AB International');
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await addActionItem(orderInfoMsg, '✓', 'Status: Closed (Delivered)');
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await addActionItem(orderInfoMsg, '✓', 'Delivery Date: 7/15/2024');
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await addActionItem(orderInfoMsg, '✓', 'Item: AS86100 - Smartphone CR100 (Qty: 10)');
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await addActionItem(orderInfoMsg, '✓', 'Days since delivery: 8 days');
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await waitIfPaused();
+
+            // Step 3: Check return policy
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1400));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            await addMessage('agent', '<span class="step-indicator">Step 3/5</span> Validating return policy and warranty terms...', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+            showScreen('screen4');
+            showElement('policyModal');
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await waitIfPaused();
+
+            const policyCheckMsg = await addMessage('agent', 'Return policy analysis:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(policyCheckMsg, '✓', 'Return window: 30 days from delivery ✓ Eligible');
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await addActionItem(policyCheckMsg, '✓', 'Product warranty: 1 year manufacturer defect coverage');
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await addActionItem(policyCheckMsg, '✓', 'Defect type: Hardware failure (covered)');
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await addActionItem(policyCheckMsg, '✓', 'Advance replacement: Qualified ✓');
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await addActionItem(policyCheckMsg, '✓', 'Return deadline: 8/14/2024 (22 days remaining)');
+
+            await new Promise(resolve => setTimeout(resolve, 2200));
+            await waitIfPaused();
+
+            hideElement('policyModal');
+
+            messageDelay = 400;
+            await addMessage('agent', 'Good news! You qualify for our advance replacement program. I can ship 3 replacement units today before you return the defective ones. This way you won\'t experience any downtime.', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            await waitIfPaused();
+
+            await addMessage('user', 'That would be perfect! Please proceed with the advance replacement.', 'USER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            // Step 4: Create RMA
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1400));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            await addMessage('agent', '<span class="step-indicator">Step 4/5</span> Creating Return Merchandise Authorization (RMA)...', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+            showScreen('screen3');
+
+            await new Promise(resolve => setTimeout(resolve, 800));
+            await waitIfPaused();
+
+            const rmaMsg = await addMessage('agent', 'RMA creation and processing:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(rmaMsg, '✓', 'RMA #RM-530680-002 created');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(rmaMsg, '✓', 'Return reason: Defective - Hardware failure');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(rmaMsg, '✓', 'Return quantity: 3 units of AS86100');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(rmaMsg, '✓', 'Return label generated and queued for email');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(rmaMsg, '✓', 'Credit hold: $708.00 (pending return receipt)');
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await waitIfPaused();
+
+            // Step 5: Process replacement order
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1400));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            await addMessage('agent', '<span class="step-indicator">Step 5/5</span> Processing advance replacement order...', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            const replacementMsg = await addMessage('agent', 'Replacement order processing:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(replacementMsg, '✓', 'Checking inventory for AS86100: 244 units available');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(replacementMsg, '✓', 'Replacement order line created (3 units)');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(replacementMsg, '✓', 'No charge (warranty replacement)');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(replacementMsg, '✓', 'Expedited shipping selected (2-day)');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(replacementMsg, '✓', 'Ship date: 7/24/2024 (Today)');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(replacementMsg, '✓', 'Expected delivery: 7/26/2024');
+
+            await new Promise(resolve => setTimeout(resolve, 2200));
+            await waitIfPaused();
+
+            showScreen('screen5');
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await waitIfPaused();
+
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            const finalStepsMsg = await addMessage('agent', 'Completing final steps:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(finalStepsMsg, '✓', 'Order updated with return line');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(finalStepsMsg, '✓', 'Warehouse pick ticket generated');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(finalStepsMsg, '✓', 'Shipment tracking will be emailed within 2 hours');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(finalStepsMsg, '✓', 'Return instructions emailed to customer contact');
+
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('system', '✓ RMA #RM-530680-002 and replacement order completed successfully');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('agent', 'All set! I\'ve processed your return and advance replacement:<br><br>• 3 replacement units of Smartphone CR100 will ship today (7/24) via expedited 2-day shipping<br>• Expected delivery: 7/26/2024<br>• Return label for defective units has been emailed<br>• Return deadline: 8/14/2024<br>• RMA #: RM-530680-002<br><br>You\'ll receive tracking information within 2 hours. Once we receive the defective units, the credit hold will be released automatically.', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            await waitIfPaused();
+
+            await addMessage('user', 'This is fantastic! You made this so easy. Thank you for handling both requests!', 'USER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            await addMessage('agent', 'You\'re very welcome! I\'m here to help with any order management tasks - whether it\'s creating orders, processing returns, checking inventory, or handling complex workflows. Feel free to reach out anytime you need assistance!', 'AI WORKER');
         }
 
         // Start the demo when page loads

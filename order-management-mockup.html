@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management System - AI Agent Demo</title>
+    <title>Order Management System - AI Worker Demo</title>
     <style>
         * {
             margin: 0;
@@ -24,9 +24,10 @@
 
         /* Main Content Area */
         .main-content {
-            flex: 1;
+            width: 45%;
             background: #2d3e50;
             overflow-y: auto;
+            border-right: 2px solid #e0e0e0;
         }
 
         .header {
@@ -300,50 +301,84 @@
 
         /* Chat Interface */
         .chat-container {
-            width: 400px;
+            flex: 1;
             background: #f8f9fa;
-            border-left: 1px solid #e0e0e0;
             display: flex;
             flex-direction: column;
             position: relative;
         }
 
         .chat-header {
-            padding: 20px;
+            padding: 20px 30px;
             border-bottom: 1px solid #e0e0e0;
             background: white;
             color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .chat-header h3 {
-            font-size: 16px;
+        .chat-header-info h3 {
+            font-size: 20px;
             font-weight: 600;
             margin-bottom: 5px;
             color: #667eea;
         }
 
-        .chat-header .subtitle {
-            font-size: 12px;
+        .chat-header-info .subtitle {
+            font-size: 13px;
             color: #666;
+        }
+
+        .playback-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-btn {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .control-btn.playing {
+            background: #667eea;
+            color: white;
         }
 
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 30px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
         }
 
         .message {
-            padding: 12px 15px;
+            padding: 16px 20px;
             background: white;
-            border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.6;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.7;
             animation: fadeInUp 0.4s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            max-width: 85%;
         }
 
         @keyframes fadeInUp {
@@ -360,32 +395,44 @@
         .message.user {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            align-self: flex-end;
         }
 
         .message.agent {
             background: white;
             color: #333;
-            border-left: 3px solid #667eea;
+            border-left: 4px solid #667eea;
+            align-self: flex-start;
         }
 
         .message.system {
             background: #e8f5e9;
             color: #2e7d32;
-            border-left: 3px solid #4caf50;
-            font-size: 12px;
+            border-left: 4px solid #4caf50;
+            font-size: 13px;
+            align-self: flex-start;
+        }
+
+        .message.thinking {
+            background: #fff4e6;
+            color: #e67700;
+            border-left: 4px solid #ffa726;
+            font-style: italic;
+            align-self: flex-start;
         }
 
         .message-label {
-            font-weight: 600;
-            font-size: 11px;
+            font-weight: 700;
+            font-size: 10px;
             text-transform: uppercase;
-            margin-bottom: 6px;
-            opacity: 0.8;
+            margin-bottom: 8px;
+            opacity: 0.7;
+            letter-spacing: 0.5px;
         }
 
         .message-content {
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 14px;
+            line-height: 1.7;
         }
 
         .message-time {
@@ -397,24 +444,44 @@
         .action-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-            padding: 8px 10px;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 10px 12px;
             background: #f8f9fa;
-            border-radius: 6px;
-            font-size: 12px;
+            border-radius: 8px;
+            font-size: 13px;
         }
 
         .action-item .icon {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #667eea;
             color: white;
             border-radius: 50%;
-            font-size: 10px;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .action-item.in-progress .icon {
+            background: #ffa726;
+        }
+
+        .action-item.completed .icon {
+            background: #4caf50;
+        }
+
+        .step-indicator {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 6px;
         }
 
         .typing-indicator {
@@ -1134,8 +1201,16 @@
         <!-- Chat Interface -->
         <div class="chat-container">
             <div class="chat-header">
-                <h3>Marie - Sales Assistant</h3>
-                <div class="subtitle">AI-Powered Order Management</div>
+                <div class="chat-header-info">
+                    <h3>Order Management AI Worker</h3>
+                    <div class="subtitle">Autonomous assistant for complex order operations</div>
+                </div>
+                <div class="playback-controls">
+                    <button class="control-btn playing" id="playPauseBtn" onclick="togglePlayback()">
+                        <span id="playPauseIcon">⏸</span>
+                    </button>
+                    <button class="control-btn" onclick="restartDemo()">↻</button>
+                </div>
             </div>
 
             <div class="chat-messages" id="chatMessages">
@@ -1147,10 +1222,40 @@
     <script>
         const chatMessages = document.getElementById('chatMessages');
         let messageDelay = 0;
+        let isPaused = false;
+        let currentDemo = null;
+
+        function togglePlayback() {
+            isPaused = !isPaused;
+            const btn = document.getElementById('playPauseBtn');
+            const icon = document.getElementById('playPauseIcon');
+
+            if (isPaused) {
+                btn.classList.remove('playing');
+                icon.textContent = '▶';
+            } else {
+                btn.classList.add('playing');
+                icon.textContent = '⏸';
+            }
+        }
+
+        function restartDemo() {
+            if (currentDemo) {
+                location.reload();
+            }
+        }
+
+        async function waitIfPaused() {
+            while (isPaused) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
 
         function addMessage(type, content, label = '') {
-            return new Promise((resolve) => {
-                setTimeout(() => {
+            return new Promise(async (resolve) => {
+                await waitIfPaused();
+                setTimeout(async () => {
+                    await waitIfPaused();
                     const messageDiv = document.createElement('div');
                     messageDiv.className = `message ${type}`;
 
@@ -1175,8 +1280,10 @@
         }
 
         function addTypingIndicator() {
-            return new Promise((resolve) => {
-                setTimeout(() => {
+            return new Promise(async (resolve) => {
+                await waitIfPaused();
+                setTimeout(async () => {
+                    await waitIfPaused();
                     const typingDiv = document.createElement('div');
                     typingDiv.className = 'typing-indicator';
                     typingDiv.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span>Processing...</span>';
@@ -1193,22 +1300,26 @@
             }
         }
 
-        function showScreen(screenId) {
+        async function showScreen(screenId) {
+            await waitIfPaused();
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
             document.getElementById(screenId).classList.remove('hidden');
         }
 
-        function showElement(elementId) {
+        async function showElement(elementId) {
+            await waitIfPaused();
             document.getElementById(elementId).classList.remove('hidden');
         }
 
-        function hideElement(elementId) {
+        async function hideElement(elementId) {
+            await waitIfPaused();
             document.getElementById(elementId).classList.add('hidden');
         }
 
-        function addActionItem(messageDiv, icon, text) {
+        async function addActionItem(messageDiv, icon, text, status = 'completed') {
+            await waitIfPaused();
             const actionDiv = document.createElement('div');
-            actionDiv.className = 'action-item';
+            actionDiv.className = `action-item ${status}`;
             actionDiv.innerHTML = `<div class="icon">${icon}</div><span>${text}</span>`;
             messageDiv.querySelector('.message-content').appendChild(actionDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1216,140 +1327,235 @@
 
         // Start the demo
         async function startDemo() {
-            messageDelay = 1200;
+            currentDemo = true;
+            messageDelay = 1500;
 
             // Step 1: User initiates conversation
-            await addMessage('user', 'Hi Marie, I received a defective smartphone from my recent order and need to return it.', 'MIKE');
+            await addMessage('user', 'I need to create a new sales order for Computer Service and Rentals. They want 15 units of the Smartphone CR100 delivered by August 5th.', 'USER');
 
             messageDelay = 1000;
             let typing = await addTypingIndicator();
-
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
             removeTypingIndicator(typing);
 
-            messageDelay = 300;
-            await addMessage('agent', 'I\'m searching for your recent orders for Computer Service and Rentals...', 'MARIE');
-
-            // Show saved search panel
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            showElement('savedSearchPanel');
+            // AI Worker starts thinking
+            messageDelay = 400;
+            await addMessage('thinking', 'Analyzing request: Create sales order with specific customer, quantity, item, and delivery date requirements. I\'ll need to validate customer information, check item availability, verify delivery feasibility, and ensure all business rules are satisfied.', 'AI WORKER PLANNING');
 
             await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
 
-            // Step 2: Show filtered orders
-            messageDelay = 300;
-            await addMessage('system', 'Applied saved search: "Last orders for Computer Service and Rentals"');
+            messageDelay = 400;
+            const planMsg = await addMessage('agent', '<span class="step-indicator">Step 1/6</span> Breaking down the order creation process:', 'AI WORKER');
 
-            messageDelay = 500;
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(planMsg, '→', 'Validate customer and account details');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(planMsg, '→', 'Verify item catalog and pricing');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(planMsg, '→', 'Check inventory availability');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(planMsg, '→', 'Calculate delivery schedule');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(planMsg, '→', 'Apply business rules and pricing');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(planMsg, '→', 'Create and submit order');
+
+            await new Promise(resolve => setTimeout(resolve, 2200));
+            await waitIfPaused();
+
+            // Step 2: Search for customer
+            messageDelay = 400;
+            await addMessage('agent', '<span class="step-indicator">Step 2/6</span> Searching for customer records...', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+            showElement('savedSearchPanel');
+
+            await new Promise(resolve => setTimeout(resolve, 1600));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('system', 'Customer lookup: "Computer Service and Rentals" - Found');
+
+            await new Promise(resolve => setTimeout(resolve, 800));
+            await waitIfPaused();
             hideElement('savedSearchPanel');
             showScreen('screen2');
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            messageDelay = 400;
+            const customerMsg = await addMessage('agent', 'Customer validation complete:', 'AI WORKER');
 
-            await addMessage('agent', 'Found 5 recent orders. Displaying filtered results in date range 7/22/2024 - 7/26/2024.', 'MARIE');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(customerMsg, '✓', 'Customer: Computer Service and Rentals (Active)');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(customerMsg, '✓', 'Bill-To Account: 1006 (Credit approved)');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(customerMsg, '✓', 'Ship-To: 405 Hills Drive, Pleasanton, CA 94588');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(customerMsg, '✓', 'Business Unit: Operations');
 
-            await new Promise(resolve => setTimeout(resolve, 2500));
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await waitIfPaused();
 
-            await addMessage('user', 'It\'s order 530412, the one from 7/22/2024.', 'MIKE');
-
-            await new Promise(resolve => setTimeout(resolve, 1200));
-
+            // Step 3: Item validation
             typing = await addTypingIndicator();
-            await new Promise(resolve => setTimeout(resolve, 800));
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
             removeTypingIndicator(typing);
 
-            messageDelay = 300;
-            await addMessage('system', 'Navigating to Order 530412');
+            messageDelay = 400;
+            await addMessage('agent', '<span class="step-indicator">Step 3/6</span> Validating item and checking inventory...', 'AI WORKER');
 
-            messageDelay = 500;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            const itemMsg = await addMessage('agent', 'Item catalog search completed:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(itemMsg, '✓', 'Item AS86100 - Smartphone CR100 Standard located');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(itemMsg, '✓', 'Unit Price: $236.00 per Each');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(itemMsg, '✓', 'Warehouse inventory: 247 units available');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(itemMsg, '✓', 'Requested quantity (15 units) can be fulfilled');
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await waitIfPaused();
+
+            // Step 4: Create order
+            messageDelay = 400;
+            await addMessage('system', 'Navigating to Order Creation screen');
+
+            await new Promise(resolve => setTimeout(resolve, 800));
+            await waitIfPaused();
             showScreen('screen3');
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            messageDelay = 400;
+            await addMessage('agent', '<span class="step-indicator">Step 4/6</span> Creating new sales order...', 'AI WORKER');
 
-            await addMessage('agent', 'Order 530412 opened. I can see 1 item: AS86100 - Smartphone CR100 (Qty: 10). Tell me about the defect.', 'MARIE');
+            await new Promise(resolve => setTimeout(resolve, 1400));
+            await waitIfPaused();
 
-            await new Promise(resolve => setTimeout(resolve, 2500));
+            const orderMsg = await addMessage('agent', 'Order structure being built:', 'AI WORKER');
 
-            await addMessage('user', 'Three of the smartphones have screen issues - they won\'t turn on at all.', 'MIKE');
-
-            await new Promise(resolve => setTimeout(resolve, 1200));
-
-            typing = await addTypingIndicator();
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            removeTypingIndicator(typing);
-
-            messageDelay = 300;
-            const policyMsg = await addMessage('agent', 'Checking product return policy for AS86100...', 'MARIE');
-
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            showScreen('screen4');
-            showElement('policyModal');
-
-            addActionItem(policyMsg, '✓', 'Return Policy: 30 days from delivery');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(orderMsg, '✓', 'Order header created: #530412');
             await new Promise(resolve => setTimeout(resolve, 500));
-            addActionItem(policyMsg, '✓', 'RMA process available for defects');
+            await addActionItem(orderMsg, '✓', 'Customer details populated');
             await new Promise(resolve => setTimeout(resolve, 500));
-            addActionItem(policyMsg, '✓', 'Advanced Replacement Policy applies');
+            await addActionItem(orderMsg, '✓', 'Order line added: AS86100 x 15 units');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(orderMsg, '✓', 'Ship date set: 7/22/2024');
 
             await new Promise(resolve => setTimeout(resolve, 2000));
+            await waitIfPaused();
 
-            await addMessage('agent', 'Good news! You qualify for advance replacement. I can ship 3 new units before you return the defective ones.', 'MARIE');
+            // Step 5: Delivery validation
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1400));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            await addMessage('agent', '<span class="step-indicator">Step 5/6</span> Validating delivery schedule and logistics...', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            const deliveryMsg = await addMessage('agent', 'Logistics analysis:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(deliveryMsg, '✓', 'Requested delivery: August 5, 2024');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(deliveryMsg, '✓', 'Standard shipping: 3-5 business days');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(deliveryMsg, '✓', 'Latest ship date: July 29, 2024');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(deliveryMsg, '✓', 'Warehouse can ship by July 22, 2024');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(deliveryMsg, '✓', 'Delivery commitment: Achievable ✓');
 
             await new Promise(resolve => setTimeout(resolve, 2200));
+            await waitIfPaused();
 
-            await addMessage('user', 'Yes please! I need the replacements as quickly as possible.', 'MIKE');
-
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
+            // Step 6: Pricing and rules
             typing = await addTypingIndicator();
-            await new Promise(resolve => setTimeout(resolve, 1200));
+            await new Promise(resolve => setTimeout(resolve, 1300));
+            await waitIfPaused();
             removeTypingIndicator(typing);
 
-            hideElement('policyModal');
+            messageDelay = 400;
+            await addMessage('agent', '<span class="step-indicator">Step 6/6</span> Applying pricing rules and business validations...', 'AI WORKER');
 
-            messageDelay = 300;
-            const rmaMsg = await addMessage('agent', 'Creating RMA and replacement order...', 'MARIE');
+            await new Promise(resolve => setTimeout(resolve, 1400));
+            await waitIfPaused();
+            showScreen('screen4');
 
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            showScreen('screen5');
+            const pricingMsg = await addMessage('agent', 'Price calculation and validation:', 'AI WORKER');
 
-            addActionItem(rmaMsg, '✓', 'RMA #RM-530412-001 created for 3 units');
-            await new Promise(resolve => setTimeout(resolve, 800));
-            addActionItem(rmaMsg, '✓', 'Return line added to order');
-            await new Promise(resolve => setTimeout(resolve, 800));
-            addActionItem(rmaMsg, '✓', 'Ship date: 8/1/2024');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(pricingMsg, '✓', 'Base price: $236.00 x 15 = $3,540.00');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(pricingMsg, '✓', 'Volume discount check: No applicable tiers');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(pricingMsg, '✓', 'Customer agreements validated');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(pricingMsg, '✓', 'Tax calculation: $212.40 (6%)');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(pricingMsg, '✓', 'Shipping cost: $85.00');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(pricingMsg, '✓', 'Order total: $3,837.40');
+
+            await new Promise(resolve => setTimeout(resolve, 2200));
+            await waitIfPaused();
+
+            // Final validation
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            const validationMsg = await addMessage('agent', 'Running final business rule validations:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(validationMsg, '✓', 'Credit limit check: Passed');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(validationMsg, '✓', 'Hold validations: No holds applied');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(validationMsg, '✓', 'Shipping restrictions: None');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(validationMsg, '✓', 'Order orchestration rules: Validated');
 
             await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
 
-            typing = await addTypingIndicator();
-            await new Promise(resolve => setTimeout(resolve, 1200));
-            removeTypingIndicator(typing);
-
-            messageDelay = 300;
-            const discountMsg = await addMessage('agent', 'Checking available offers and discounts...', 'MARIE');
-
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            addActionItem(discountMsg, '✓', 'Inventory confirmed for 8/1/2024 delivery');
-            await new Promise(resolve => setTimeout(resolve, 600));
-            addActionItem(discountMsg, '✓', '10% courtesy discount applied');
-            await new Promise(resolve => setTimeout(resolve, 600));
-            addActionItem(discountMsg, '✓', 'Order total updated: $2,912.00');
-
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            await addMessage('system', '✓ RMA and replacement order completed successfully');
-
-            await new Promise(resolve => setTimeout(resolve, 800));
-
-            await addMessage('agent', 'All set! Your 3 replacement units will ship on 8/1/2024 with 10% discount applied. Return shipping label will be emailed within the hour.', 'MARIE');
-
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            await addMessage('user', 'Perfect, thank you Marie!', 'MIKE');
+            messageDelay = 400;
+            await addMessage('system', '✓ Order #530412 created and validated successfully');
 
             await new Promise(resolve => setTimeout(resolve, 1000));
+            await waitIfPaused();
+            showScreen('screen5');
 
-            await addMessage('agent', 'You\'re welcome! Is there anything else I can help you with?', 'MARIE');
+            await new Promise(resolve => setTimeout(resolve, 800));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('agent', 'Order creation complete! Sales Order #530412 has been created with 15 units of Smartphone CR100. The order will ship on 7/22/2024 and arrive by 8/5/2024 as requested. Total value: $3,837.40. The order is now ready for fulfillment processing.', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            await waitIfPaused();
+
+            await addMessage('user', 'Excellent! That was exactly what I needed. Thank you!', 'USER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            await addMessage('agent', 'You\'re welcome! The order has been submitted to the fulfillment system. Would you like me to help with anything else?', 'AI WORKER');
         }
 
         // Start the demo when page loads

@@ -1513,6 +1513,70 @@
             await new Promise(resolve => setTimeout(resolve, 2200));
             await waitIfPaused();
 
+            // OD/PO Validation
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1400));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            await addMessage('agent', 'Checking for signed Order Documents (ODs) and Purchase Orders (POs)...', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            const odpoCheckMsg = await addMessage('agent', 'Document verification:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(odpoCheckMsg, '✓', 'Scanning for associated ODs and POs');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(odpoCheckMsg, '✓', 'Found: 2 Order Documents, 3 Purchase Orders');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(odpoCheckMsg, '✓', 'Documents require validation before order submission');
+
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
+
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            await addMessage('system', 'Delegating to ODPO Validation Agent');
+
+            await new Promise(resolve => setTimeout(resolve, 800));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            const odpoAgentMsg = await addMessage('agent', 'ODPO Validation Agent processing documents:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 700));
+            await addActionItem(odpoAgentMsg, '✓', 'OD-2024-07-001: Validated (Signed, Active)');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(odpoAgentMsg, '✓', 'OD-2024-07-003: Validated (Signed, Active)');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(odpoAgentMsg, '✓', 'PO-CSR-15623: Validated (Approved, Budget confirmed)');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(odpoAgentMsg, '✓', 'PO-CSR-15624: Validated (Approved, Budget confirmed)');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(odpoAgentMsg, '✓', 'PO-CSR-15625: Validated (Approved, Budget confirmed)');
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('system', '✓ ODPO Validation Agent completed - All documents valid');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('agent', 'All Order Documents and Purchase Orders have been validated successfully. Proceeding with final business rule checks.', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
+
             // Final validation
             typing = await addTypingIndicator();
             await new Promise(resolve => setTimeout(resolve, 1200));

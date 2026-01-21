@@ -1770,79 +1770,161 @@
             await new Promise(resolve => setTimeout(resolve, 2000));
             await waitIfPaused();
 
-            // Step 5: Process replacement order
+            // Manager approval required
+            typing = await addTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+            removeTypingIndicator(typing);
+
+            messageDelay = 400;
+            await addMessage('agent', 'Checking approval requirements for RMA...', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('system', 'Manager approval required for advance replacement over $500');
+
+            await new Promise(resolve => setTimeout(resolve, 800));
+            await waitIfPaused();
+
+            const approvalMsg = await addMessage('agent', 'Submitting RMA for manager approval:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(approvalMsg, '✓', 'RMA #RM-530680-002 submitted to manager Sarah Chen');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(approvalMsg, '✓', 'Approval notification sent');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(approvalMsg, '✓', 'Expected approval time: 2-4 hours');
+
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('agent', 'I\'ve submitted your RMA for manager approval. Once Sarah Chen approves it, I\'ll automatically process the replacement order and arrange the expedited shipping. You\'ll receive an email notification when everything is complete. I\'ll keep monitoring the approval status in the background.', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 2800));
+            await waitIfPaused();
+
+            await addMessage('user', 'Okay, thank you! I need to head out now. Talk to you later.', 'USER');
+
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            await waitIfPaused();
+
+            await addMessage('agent', 'You\'re welcome! I\'ll take care of everything once the approval comes through. Have a great day!', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            await waitIfPaused();
+
+            // ========== BACKGROUND PROCESSING ==========
+            messageDelay = 400;
+            await addMessage('system', '⏱ Time elapsed: User away - Background processing active...');
+
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('system', '✓ Manager approval received (3:45 PM - Sarah Chen approved)');
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await waitIfPaused();
+
+            const bgProcessMsg = await addMessage('agent', 'Background processing initiated:', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(bgProcessMsg, '✓', 'RMA approval detected');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(bgProcessMsg, '✓', 'Checking inventory: 244 units available');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(bgProcessMsg, '✓', 'Replacement order line created (3 units)');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(bgProcessMsg, '✓', 'Expedited 2-day shipping selected');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(bgProcessMsg, '✓', 'Warehouse pick ticket generated');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(bgProcessMsg, '✓', 'Order submitted to fulfillment');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(bgProcessMsg, '✓', 'Shipment tracking: #1Z999AA10123456784');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(bgProcessMsg, '✓', 'Return label emailed to customer');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addActionItem(bgProcessMsg, '✓', 'Email notification sent to user');
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await waitIfPaused();
+
+            showScreen('screen5');
+
+            await new Promise(resolve => setTimeout(resolve, 800));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('system', '✓ Background processing completed at 4:15 PM - Session stored in episodic memory');
+
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            await waitIfPaused();
+
+            // ========== NEXT DAY - USER RETURNS ==========
+            messageDelay = 400;
+            await addMessage('system', '⏱ Next Day - July 25, 2024 (9:30 AM)');
+
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            await waitIfPaused();
+
+            messageDelay = 400;
+            await addMessage('user', 'Hi', 'USER');
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await waitIfPaused();
+
             typing = await addTypingIndicator();
             await new Promise(resolve => setTimeout(resolve, 1400));
             await waitIfPaused();
             removeTypingIndicator(typing);
 
             messageDelay = 400;
-            await addMessage('agent', '<span class="step-indicator">Step 5/5</span> Processing advance replacement order...', 'AI WORKER');
-
-            await new Promise(resolve => setTimeout(resolve, 1200));
-            await waitIfPaused();
-
-            const replacementMsg = await addMessage('agent', 'Replacement order processing:', 'AI WORKER');
-
-            await new Promise(resolve => setTimeout(resolve, 600));
-            await addActionItem(replacementMsg, '✓', 'Checking inventory for AS86100: 244 units available');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await addActionItem(replacementMsg, '✓', 'Replacement order line created (3 units)');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await addActionItem(replacementMsg, '✓', 'No charge (warranty replacement)');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await addActionItem(replacementMsg, '✓', 'Expedited shipping selected (2-day)');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await addActionItem(replacementMsg, '✓', 'Ship date: 7/24/2024 (Today)');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await addActionItem(replacementMsg, '✓', 'Expected delivery: 7/26/2024');
+            await addMessage('thinking', 'User returned. Accessing episodic memory... Found previous session from 7/24/2024. Context: RMA #RM-530680-002 for defective smartphones, manager approval pending. Checking current status...', 'AI WORKER MEMORY RECALL');
 
             await new Promise(resolve => setTimeout(resolve, 2200));
             await waitIfPaused();
 
-            showScreen('screen5');
-
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            await waitIfPaused();
-
-            typing = await addTypingIndicator();
-            await new Promise(resolve => setTimeout(resolve, 1200));
-            await waitIfPaused();
-            removeTypingIndicator(typing);
-
             messageDelay = 400;
-            const finalStepsMsg = await addMessage('agent', 'Completing final steps:', 'AI WORKER');
+            const memoryMsg = await addMessage('agent', 'Welcome back! I have an update on your return request from yesterday:', 'AI WORKER');
 
+            await new Promise(resolve => setTimeout(resolve, 700));
+            await addActionItem(memoryMsg, '✓', 'RMA #RM-530680-002 was approved by Sarah Chen at 3:45 PM');
             await new Promise(resolve => setTimeout(resolve, 600));
-            await addActionItem(finalStepsMsg, '✓', 'Order updated with return line');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await addActionItem(finalStepsMsg, '✓', 'Warehouse pick ticket generated');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await addActionItem(finalStepsMsg, '✓', 'Shipment tracking will be emailed within 2 hours');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await addActionItem(finalStepsMsg, '✓', 'Return instructions emailed to customer contact');
+            await addActionItem(memoryMsg, '✓', 'Replacement order processed automatically');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(memoryMsg, '✓', 'Shipment tracking: #1Z999AA10123456784');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            await addActionItem(memoryMsg, '✓', 'Current status: Out for delivery');
 
-            await new Promise(resolve => setTimeout(resolve, 1800));
+            await new Promise(resolve => setTimeout(resolve, 2000));
             await waitIfPaused();
 
             messageDelay = 400;
-            await addMessage('system', '✓ RMA #RM-530680-002 and replacement order completed successfully');
+            await addMessage('agent', 'Great news! Your 3 replacement Smartphone CR100 units shipped yesterday evening and are currently out for delivery. You should receive them today by end of day. The return label for the defective units was emailed to you yesterday. Everything has been taken care of while you were away!', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 2800));
+            await waitIfPaused();
+
+            await addMessage('user', 'Wow, that\'s amazing! Thank you for handling all of that automatically. This is exactly what I needed!', 'USER');
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            await waitIfPaused();
+
+            await addMessage('agent', 'You\'re very welcome! I continuously monitor tasks and process them as soon as approvals come through. That\'s the power of having an AI Worker - I can handle complex workflows across multiple sessions while you focus on other priorities. Is there anything else I can help you with today?', 'AI WORKER');
+
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            await waitIfPaused();
+
+            await addMessage('user', 'No, that\'s all for now. This has been incredibly helpful!', 'USER');
 
             await new Promise(resolve => setTimeout(resolve, 1200));
             await waitIfPaused();
 
-            messageDelay = 400;
-            await addMessage('agent', 'All set! I\'ve processed your return and advance replacement:<br><br>• 3 replacement units of Smartphone CR100 will ship today (7/24) via expedited 2-day shipping<br>• Expected delivery: 7/26/2024<br>• Return label for defective units has been emailed<br>• Return deadline: 8/14/2024<br>• RMA #: RM-530680-002<br><br>You\'ll receive tracking information within 2 hours. Once we receive the defective units, the credit hold will be released automatically.', 'AI WORKER');
-
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            await waitIfPaused();
-
-            await addMessage('user', 'This is fantastic! You made this so easy. Thank you for handling both requests!', 'USER');
-
-            await new Promise(resolve => setTimeout(resolve, 1200));
-            await waitIfPaused();
-
-            await addMessage('agent', 'You\'re very welcome! I\'m here to help with any order management tasks - whether it\'s creating orders, processing returns, checking inventory, or handling complex workflows. Feel free to reach out anytime you need assistance!', 'AI WORKER');
+            await addMessage('agent', 'Excellent! Feel free to reach out anytime you need assistance with order management. Have a great day!', 'AI WORKER');
         }
 
         // Start the demo when page loads
